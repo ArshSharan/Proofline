@@ -23,11 +23,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Build shared core package
+        run: npm run build:core
+
       - name: Static lint analysis
         run: npm run lint --workspaces --if-present
 
       - name: Strict typecheck
-        run: npm run typecheck --workspaces --if-present
+        run: npm run typecheck
 
       - name: Core and lab unit tests
         run: npm run test --workspaces --if-present
@@ -39,7 +42,7 @@ jobs:
         run: npm run test:proof
 
       - name: Workspace production build
-        run: npm run build --workspaces --if-present
+        run: npm run build
 
       - name: Upload evidence summary
         uses: actions/upload-artifact@v4
