@@ -1,0 +1,40 @@
+# dependencies
+node_modules/
+.npm/
+
+# build outputs
+dist/
+.next/
+out/
+build/
+
+# environment
+.env
+.env.local
+.env.*.local
+
+# database
+*.sqlite
+*.sqlite3
+*.db
+
+# OS
+.DS_Store
+Thumbs.db
+
+# editor
+.vscode/settings.json
+.idea/
+
+# test output
+coverage/
+.vitest/
+
+# evidence exports (committed manually)
+docs/evidence/*.json
+docs/evidence/*.csv
+!docs/evidence/ci-summary.json
+
+# logs
+*.log
+npm-debug.log*
