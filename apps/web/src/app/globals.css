@@ -1,26 +1,58 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --porcelain: #F5F6F3;
+  --paper: #FFFFFF;
+  --mist: #E4E7E2;
+  --stone: #68706C;
+  --graphite: #1C2124;
+  --bordeaux: #7A1F33;
+  --pine: #1E4B3C;
+  --bordeaux-wash: #F3E6E8;
+  --pine-wash: #E5EEEA;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@theme {
+  --color-porcelain: #F5F6F3;
+  --color-paper: #FFFFFF;
+  --color-mist: #E4E7E2;
+  --color-stone: #68706C;
+  --color-graphite: #1C2124;
+  --color-bordeaux: #7A1F33;
+  --color-pine: #1E4B3C;
+  --color-bordeaux-wash: #F3E6E8;
+  --color-pine-wash: #E5EEEA;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-display: var(--font-bodoni), "Bodoni Moda", "Didot", "Bodoni 72", Georgia, serif;
+  --font-sans: var(--font-hanken), "Hanken Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: var(--font-plex-mono), "IBM Plex Mono", Menlo, Monaco, Consolas, monospace;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #F5F6F3;
+  color: #1C2124;
+  font-family: var(--font-hanken), "Hanken Grotesk", "Helvetica Neue", Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-display {
+  font-family: var(--font-bodoni), "Bodoni Moda", "Didot", "Bodoni 72", Georgia, serif;
+}
+
+.font-sans {
+  font-family: var(--font-hanken), "Hanken Grotesk", "Helvetica Neue", Arial, sans-serif;
+}
+
+.font-mono {
+  font-family: var(--font-plex-mono), "IBM Plex Mono", Menlo, Monaco, Consolas, monospace;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+.run-bar-shadow {
+  box-shadow: 0 24px 48px -24px rgba(28, 33, 36, 0.18);
 }

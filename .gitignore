@@ -15,6 +15,7 @@ build/
 
 # database
 *.sqlite
+*.sqlite*
 *.sqlite3
 *.db
 

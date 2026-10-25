@@ -1,11 +1,7 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "paths": {
-      "@proofline/core": ["../../packages/core/src/index.ts"]
-    }
+    "outDir": "./dist"
   },
   "include": ["src"]
 }
