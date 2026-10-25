@@ -9,6 +9,8 @@ import {
 } from "./services/runs.js";
 import { redosRouter } from "./modules/redos/routes.js";
 import { runRedosAttack } from "./modules/redos/runner.js";
+import { raceRouter } from "./modules/race/routes.js";
+import { runRaceAttack, resetRaceState } from "./modules/race/runner.js";
 import { FINDINGS } from "@proofline/core";
 import type { Module, Mode, SseEvent } from "@proofline/core";
 
@@ -142,6 +144,8 @@ app.post("/api/runs", (req, res) => {
 
   if (validModule === "redos") {
     runRedosAttack(run.id, validMode, params);
+  } else if (validModule === "race") {
+    runRaceAttack(run.id, validMode, params);
   }
 
   res.status(202).json({
@@ -152,11 +156,17 @@ app.post("/api/runs", (req, res) => {
   });
 });
 
+app.post("/api/reset", (_req, res) => {
+  resetRaceState();
+  res.json({ status: "ok", message: "All modules reset to initial seed state." });
+});
+
 // ---------------------------------------------------------------------------
 // Module Routes
 // ---------------------------------------------------------------------------
 
 app.use("/api/redos", redosRouter);
+app.use("/api/race", raceRouter);
 
 // ---------------------------------------------------------------------------
 // Server Listen
