@@ -2,9 +2,9 @@
 
 **Break it. Fix it. Prove it.**
 
-Proofline is a local security lab and dashboard for the course BCSE320L, Web Application Security. It takes three availability and logic flaws that most vulnerability labs skip, lets you exploit each one, switch the same code path to a hardened version, and prove the difference with measurements, CVSS scores and automated regression tests.
+Proofline is an empirical web security laboratory and telemetry dashboard. It takes three availability and logic flaws that most vulnerability labs skip, lets you exploit each one, switch the same code path to a hardened version, and prove the difference with quantitative measurements, CVSS v3.1 scores and automated regression tests.
 
-> Course case study project, Fall Semester 2026-27. Runs on your own machine only.
+> Local security engineering laboratory and defense testbed. Runs on your own machine only.
 
 ---
 
@@ -12,11 +12,11 @@ Proofline is a local security lab and dashboard for the course BCSE320L, Web App
 
 Most training apps (DVWA, Juice Shop, WebGoat) focus on stealing data. Proofline focuses on attacks that break a service or its business rules without stealing anything.
 
-| Module | Flaw | Syllabus link | What you see |
+| Module | Flaw | Category | What you see |
 | --- | --- | --- | --- |
-| Slow regex | Regular expression denial of service (ReDoS) | Module 5 | Response time against input length, and a live service probe that stalls during the attack |
-| Double redemption | Race condition, a logical DoS | Module 5 | Ten parallel requests redeem a single-use coupon more than once |
-| Outdated package | Vulnerable third-party dependency (prototype pollution) | Modules 5 and 7 | A crafted JSON body flips an admin check, flagged by the package audit |
+| Slow regex | Regular expression denial of service (ReDoS) | Algorithmic Complexity / Availability | Response time against input length, and a live service probe that stalls during the attack |
+| Double redemption | Race condition, a logical DoS | Concurrency / Business Logic Integrity | Ten parallel requests redeem a single-use coupon more than once |
+| Outdated package | Vulnerable third-party dependency (prototype pollution) | Supply Chain / Object Injection | A crafted JSON body flips an admin check, flagged by the package audit |
 
 Every module has the same four parts:
 
@@ -27,9 +27,9 @@ Every module has the same four parts:
 
 Across the whole app:
 
-- **CVSS ledger.** Every finding scored before and after the fix (Module 7 of the syllabus).
-- **CI pipeline.** Static analysis (Semgrep), dependency audit, regression tests and an OWASP ZAP baseline scan (Module 6).
-- **Evidence export.** One button produces the tables, charts and JSON you need for the case study report.
+- **CVSS ledger.** Every finding scored before and after the fix with complete vector breakdowns.
+- **CI pipeline.** Static analysis (Semgrep), dependency audit, dual-mode regression tests and an OWASP ZAP baseline scan.
+- **Evidence export.** One button produces the tables, execution metrics and JSON artifacts for security audits.
 
 ---
 
@@ -56,7 +56,7 @@ proofline/
 │   ├── TRD.md
 │   ├── Architecture.md
 │   ├── DesignBrief.md
-│   └── evidence/         Exported run data and screenshots for the report
+│   └── evidence/         Exported run data and audit artifacts
 ├── scripts/
 │   └── proof.mjs         Proof matrix runner
 ├── .github/workflows/ci.yml
@@ -110,7 +110,7 @@ Open http://localhost:3000.
 
 Work in small steps and commit after every feature or stage passes its checks.
 
-- Branch: work on `main` for the course project, or short feature branches merged into `main`.
+- Branch: work on `main`, or short feature branches merged into `main`.
 - Commit style: [Conventional Commits](https://www.conventionalcommits.org/), imperative, 72 characters or fewer, no trailing period.
 - Format: `type(scope): short summary`
 - Types: `feat`, `fix`, `test`, `docs`, `chore`, `refactor`, `ci`, `style`
@@ -130,14 +130,14 @@ The staged build plan, with a commit checkpoint per stage, is in `docs/TRD.md`.
 
 ---
 
-## Mapping to the case study report
+## Architecture and documentation index
 
-| Report section | Where the material comes from |
+| Section | Source Material |
 | --- | --- |
-| Abstract, Introduction | This README and `docs/Architecture.md` (motivation and scope) |
-| Problem Definition | The three modules and their CVSS findings |
+| Overview and Threat Model | This README and `docs/Architecture.md` (motivation and scope) |
+| Problem Definition | The three modules and their CVSS findings in `packages/core` |
 | Objectives and Scope | `docs/TRD.md`, sections 1 to 3 |
-| Literature Review | OWASP Top 10, OWASP ASVS, CVE and CVSS references (collect while building) |
+| Standards and References | OWASP Top 10, OWASP ASVS, CVE and CVSS v3.1 references |
 | Methodology and System Design | `docs/Architecture.md` diagrams and the CI pipeline |
 | Proof of Concept | Each module page, plus the code in `apps/lab/src/modules/` |
 | Results and Output | The Evidence page and `docs/evidence/` exports |
@@ -152,6 +152,6 @@ The staged build plan, with a commit checkpoint per stage, is in `docs/TRD.md`.
 - [Architecture and technical decisions](docs/Architecture.md)
 - [Design brief for the dashboard](docs/DesignBrief.md)
 
-## Licence
+## License
 
-For academic use. Add a licence of your choice before publishing the repository.
+MIT License. See LICENSE for details.

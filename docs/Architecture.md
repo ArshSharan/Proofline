@@ -1,7 +1,7 @@
 # Architecture and Technical Decisions
 
 **Project:** Proofline
-**Audience:** The team, the coding agent, and the faculty reading the report
+**Audience:** Engineers, security researchers, and evaluators
 **Companion documents:** README.md, TRD.md, DesignBrief.md
 
 ---
@@ -78,26 +78,26 @@ Each decision lists the choice, the reasons, and what was rejected.
 ### D1. TypeScript end to end
 
 - **Choice:** TypeScript for the dashboard, the lab server and the shared package.
-- **Why:** One language for the whole project, shared types for API contracts, and it keeps setup simple for a small student team. ReDoS and prototype pollution are most naturally demonstrated in JavaScript, because the V8 regex engine backtracks and JavaScript objects have prototypes.
+- **Why:** One language for the whole project, shared types for API contracts, and simple setup without polyglot overhead. ReDoS and prototype pollution are most naturally demonstrated in JavaScript, because the V8 regex engine backtracks and JavaScript objects have prototypes.
 - **Rejected:** Python (Flask) backend. It would work for the race condition, but ReDoS and prototype pollution would need separate stacks.
 
 ### D2. Monorepo with pnpm workspaces
 
 - **Choice:** `apps/web`, `apps/lab`, `packages/core` in one repository.
 - **Why:** One clone, one install, one CI pipeline, and shared types without publishing a package.
-- **Rejected:** Separate repositories (more setup for evaluators), Nx or Turborepo (extra tooling the project does not need).
+- **Rejected:** Separate repositories (more setup overhead), Nx or Turborepo (extra tooling the project does not need).
 
 ### D3. Next.js App Router for the dashboard
 
 - **Choice:** Next.js with the App Router, React Server Components for static content, client components for live charts.
-- **Why:** Fast production build, simple routing, built-in font loading (`next/font`), and the course asks for a React or Next.js frontend.
+- **Why:** Fast production build, simple routing, built-in font loading (`next/font`), and modern React ecosystem integration.
 - **Rejected:** Vite SPA (fewer built-in features for fonts and routing), separate design framework (Tailwind with custom tokens is enough).
 
 ### D4. Express for the lab server, kept deliberately small
 
 - **Choice:** Express with a handful of middleware, no ORM.
-- **Why:** The vulnerable code must be easy to read in the report. Fewer layers means shorter code listings and clearer screenshots.
-- **Rejected:** NestJS and Fastify (more abstraction than a report reader needs).
+- **Why:** The vulnerable code must be easy to audit. Fewer layers means concise code listings and transparent control flow.
+- **Rejected:** NestJS and Fastify (unnecessary abstraction that obscures vulnerability mechanisms).
 
 ### D5. Mode is chosen per request, never stored on the server
 
@@ -108,14 +108,14 @@ Each decision lists the choice, the reasons, and what was rejected.
 ### D6. SQLite through better-sqlite3
 
 - **Choice:** One SQLite file, synchronous driver.
-- **Why:** Zero setup, easy to reset, and easy to attach to the report as evidence. The synchronous driver is fast enough for the lab and keeps code short.
+- **Why:** Zero setup, easy to reset, and straightforward to export as empirical evidence. The synchronous driver is fast enough for the lab and keeps code short.
 - **Race condition detail:** better-sqlite3 calls are synchronous, so a pure check-then-write would never race in a single Node process. The vulnerable path therefore includes an awaited step between the check and the write (a call to a simulated ledger service with `RACE_GAP_MS` delay). That mirrors real code, where the gap is a network call, and it makes the race reproducible. The hardened path removes the gap by using one atomic SQL statement.
 - **Rejected:** PostgreSQL (more setup, no benefit for the demonstration), in-memory only (loses the evidence history).
 
 ### D7. ReDoS: main thread when vulnerable, worker thread with timeout when hardened
 
 - **Choice:** Vulnerable code runs the regex directly on the main thread. Hardened code applies three layers: input length cap, a linear-time rewrite of the pattern, and execution in a worker thread that is terminated after a timeout.
-- **Why:** Running on the main thread is what makes the whole server stall, which is the real-world impact of ReDoS. The layered fix shows defence in depth (Module 6 of the syllabus: multiple layers of security).
+- **Why:** Running on the main thread is what makes the whole server stall, which is the real-world impact of ReDoS. The layered fix demonstrates defense in depth across multiple validation and runtime boundaries.
 - **Safety:** Both modes share a ladder ceiling and a total time limit, enforced by the runner, so the demo cannot freeze a laptop.
 - **Optional extra:** An RE2-based variant as a fourth layer, if the native module installs cleanly. It is not required.
 - **Rejected:** Running the vulnerable regex in a worker as well. That would hide the availability impact the project wants to show.
@@ -126,18 +126,18 @@ Each decision lists the choice, the reasons, and what was rejected.
 - **Why:** The mode switch needs both versions available at runtime. Aliases give that without a second server.
 - **Version selection:** The agent must pick a version that `npm audit` actually flags and that is exploitable through a deep merge (prototype pollution). Verify the advisory before committing, and record the advisory ID in `meta.ts`.
 - **Isolation:** Attacks run in a child process so `Object.prototype` pollution cannot leak into the main server. This also makes tests order-independent.
-- **Rejected:** Mocking the vulnerable package. Evaluators should see a real advisory and a real exploit.
+- **Rejected:** Mocking the vulnerable package. Security evaluation demands real advisories and reproducible exploits.
 
 ### D9. CVSS calculator implemented in code
 
 - **Choice:** Implement the CVSS v3.1 base formula in `packages/core` with unit tests.
-- **Why:** It shows understanding of how scores are derived (Module 7), avoids an external service, and the scores update if the team changes a vector.
+- **Why:** It demonstrates transparent scoring logic directly from the CVSS v3.1 specification, avoids external dependencies, and updates dynamically with vector changes.
 - **Verification:** Test against published example scores from the FIRST specification.
 
 ### D10. Regression tests as security assertions, run in both modes
 
 - **Choice:** Tests assert the secure behaviour. `LAB_MODE=hardened` must pass. `LAB_MODE=vulnerable` must fail on the targeted assertions.
-- **Why:** A test that only passes proves little. A test that fails before the fix and passes after proves the fix works (Module 6: vulnerability regression testing).
+- **Why:** A test that only passes proves little. A test that fails before the fix and passes after proves the mitigation is effective (dual-mode regression testing).
 - **Tooling:** `test:proof` inverts the exit code for the vulnerable run and checks that exactly the expected tests failed.
 
 ### D11. Live updates through Server-Sent Events
@@ -162,7 +162,7 @@ Each decision lists the choice, the reasons, and what was rejected.
 ### D14. CI proves the flaws and the fixes
 
 - **Choice:** GitHub Actions jobs: `quality` (lint, typecheck, unit), `proof` (hardened passes, vulnerable fails as expected), `semgrep`, `audit`, `zap`.
-- **Why:** The pipeline itself becomes evidence for Module 6 (security automation, static and dynamic analysis).
+- **Why:** The pipeline demonstrates continuous security automation incorporating static analysis, dependency checking, and dynamic scanning.
 - **Allow-list policy:** Intentional findings are suppressed only with an inline comment that names the module and the reason. A custom Semgrep rule pack detects each flaw pattern so the pipeline shows that the scanner finds them.
 
 ### D15. Light, editorial visual identity
@@ -176,7 +176,7 @@ Each decision lists the choice, the reasons, and what was rejected.
 
 ### 3.1 ReDoS module
 
-- The vulnerable pattern is a classic nested quantifier. Keep it in one named constant with a comment explaining the backtracking so the code listing in the report is self-explanatory.
+- The vulnerable pattern is a classic nested quantifier. Keep it in one named constant with a comment explaining the backtracking so code listings and audits are self-explanatory.
 - The ladder sends `"a".repeat(n) + "!"` style inputs that force worst-case backtracking. Keep `n` below the ceiling.
 - Measure event-loop delay with `perf_hooks.monitorEventLoopDelay`.
 - The rewrite in Hardened mode must accept the same valid inputs. Unit tests compare the two patterns on a set of valid and invalid samples that are short enough to be safe.
@@ -197,7 +197,7 @@ Each decision lists the choice, the reasons, and what was rejected.
 ### 3.4 Evidence
 
 - Every run stores its raw samples. Charts can always be rebuilt from stored data.
-- The export includes the git commit hash, Node version and operating system, so results in the report are reproducible and attributable.
+- The export includes the git commit hash, Node version and operating system, so exported telemetry is reproducible and verifiable.
 
 ---
 
@@ -223,14 +223,14 @@ Each decision lists the choice, the reasons, and what was rejected.
 
 ## 6. Known limitations
 
-- Timings depend on the machine. Reports must state the hardware and Node version.
+- Timings depend on the machine. Benchmarks and evaluations should record hardware and Node version.
 - The race condition depends on a simulated gap. Real systems have variable gaps, so the lab shows that the flaw exists, not how often it occurs in production.
 - The dashboard has no authentication because it is a local lab.
 - ZAP baseline is a passive scan and does not find every issue.
 - The audit depends on the advisory database at the time of the run. The stored fixture keeps the demonstration working offline.
 
-## 7. Open questions for the team
+## 7. Architectural roadmap items
 
-1. How many team members are there, and who owns which module? (The template has room for three names.)
-2. Should the report include the optional RE2 layer?
-3. Which two advisory IDs will be cited in the report for the dependency module?
+1. Evaluation of alternative concurrency models for high-throughput race testing.
+2. Integration of the optional RE2 linear-time regex engine layer.
+3. Expansion of dependency vulnerability profiles for additional prototype pollution vectors.

@@ -11,8 +11,8 @@ Proofline should look like a product from a long-established firm: calm, precise
 
 The subject is evidence. The interface exists to let someone watch a flaw happen, watch the fix work, and trust the numbers. Design choices serve that: generous space, quiet surfaces, exact typography, and one memorable interaction.
 
-**Audience:** course faculty and evaluators first, the project team second.
-**Primary job of the interface:** make the difference between Vulnerable and Hardened obvious within seconds, and make the numbers easy to copy into a report.
+**Audience:** Security researchers, engineers, and evaluators.
+**Primary job of the interface:** make the difference between Vulnerable and Hardened obvious within seconds, and make empirical metrics immediate and verifiable.
 
 ## 2. What to avoid
 

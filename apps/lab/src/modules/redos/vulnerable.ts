@@ -28,5 +28,5 @@ export function validateVulnerable(input: string): ValidationResult {
 
 export function makeReDoSInput(n: number): string {
   const boundedN = Math.min(Math.max(1, n), REDOS_MAX_LADDER);
-  return "a ".repeat(boundedN) + "!";
+  return "a".repeat(boundedN) + "!";
 }

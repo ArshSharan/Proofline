@@ -1,14 +1,14 @@
 # Technical Requirements Document (TRD)
 
 **Project:** Proofline, "Break it. Fix it. Prove it."
-**Course:** BCSE320L Web Application Security, Fall Semester 2026-27
+**Scope:** Standalone Security Engineering Showcase and Testbed
 **Status:** Draft 1.0
 
 ---
 
 ## 1. Purpose and goals
 
-Build a local lab and dashboard that demonstrates three availability and logic vulnerabilities, shows each one being exploited and then mitigated, and produces measurable evidence for a case study report.
+Build a local lab and dashboard that demonstrates three availability and logic vulnerabilities, shows each one being exploited and then mitigated, and produces measurable empirical evidence for security evaluation.
 
 Goals:
 
@@ -16,7 +16,7 @@ Goals:
 - G2. Let the user switch each flaw between Vulnerable and Hardened behaviour and compare the results.
 - G3. Quantify the improvement with metrics and CVSS v3.1 scores.
 - G4. Turn each exploit into an automated regression test and run it in CI.
-- G5. Export evidence (tables, charts, JSON) that maps to the case study template.
+- G5. Export empirical evidence (tables, charts, JSON) for security evaluation.
 
 ## 2. Scope
 
@@ -35,13 +35,13 @@ Goals:
 
 ## 3. Users and use cases
 
-Primary users are the project team, the course faculty and evaluators.
+Primary users are security engineers, developers, and evaluators.
 
 - UC1. Run a module in Vulnerable mode and see the failure.
 - UC2. Run the same attack in Hardened mode and see it fail.
 - UC3. Run both modes side by side (paired run) and compare charts.
 - UC4. Read the CVSS before and after for each finding.
-- UC5. Export evidence for the report.
+- UC5. Export evidence and telemetry artifacts.
 - UC6. See the CI results that prove each regression test.
 
 ## 4. Functional requirements
@@ -106,8 +106,8 @@ Proposed starting vectors (the calculator confirms the scores):
 | Finding | Vulnerable vector | Hardened vector |
 | --- | --- | --- |
 | ReDoS | `AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H` (expected 7.5) | `AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:L` (expected 3.7) |
-| Race condition | `AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:H/A:N` (expected 6.5) | Residual risk vector chosen by the team and justified in the report |
-| Prototype pollution | Chosen by the team and justified in the report | Residual risk vector chosen by the team and justified in the report |
+| Race condition | `AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:H/A:N` (expected 6.5) | Residual risk vector chosen and documented in findings |
+| Prototype pollution | Vector chosen and documented in findings | Residual risk vector chosen and documented in findings |
 
 ### 4.6 Regression tests
 
@@ -123,7 +123,7 @@ Proposed starting vectors (the calculator confirms the scores):
 | --- | --- |
 | FR-E1 | The Evidence page lists saved runs with filters by module and mode. |
 | FR-E2 | Export produces a JSON file of all runs and a CSV per module. |
-| FR-E3 | A print-friendly page renders the main charts and the CVSS table at A4 size, so the user can save as PDF and paste into the report. |
+| FR-E3 | A print-friendly page renders the main charts and the CVSS table at A4 size, so the user can save as PDF for reports or documentation. |
 | FR-E4 | Each chart has a "Copy as image" action (PNG). |
 
 ### 4.8 CI pipeline
@@ -229,7 +229,7 @@ Commit after each stage passes its checks. Messages are short, imperative and fo
 | 11 | Web: Findings ledger, Pipeline page, Evidence page and export | Export downloads, print layout looks correct | `feat(web): add findings ledger`, `feat(web): add evidence export` |
 | 12 | CI workflow, Semgrep, audit, ZAP, Docker Compose | Pipeline is green on `main` | `ci: add test and proof jobs`, `ci: add semgrep and zap` |
 | 13 | Polish: accessibility pass, empty and error states, README screenshots | Checklist in section 10 satisfied | `style(web): refine spacing and focus states`, `docs: add screenshots` |
-| 14 | Evidence capture for the report | `docs/evidence/` holds JSON, CSV and screenshots | `docs: add exported evidence` |
+| 14 | Evidence capture and export verification | `docs/evidence/` holds JSON, CSV and screenshots | `docs: add exported evidence` |
 
 Rules for every stage:
 
